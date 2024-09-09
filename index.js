@@ -5,11 +5,26 @@ const cors = require('cors');
 const app = express();
 
 // CORS設定
-app.use(cors({
-  origin: 'https://dhaqui.github.io',  // クライアントのオリジン
-  credentials: true,  // 認証情報を許可
-  optionsSuccessStatus: 200
-}));
+app.use((req, res, next) => {
+  // 特定のオリジンを許可
+  res.setHeader('Access-Control-Allow-Origin', 'https://dhaqui.github.io');
+
+  // 認証情報を含むリクエストを許可
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // 許可するHTTPメソッド
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+
+  // 許可するヘッダー
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // プリフライトリクエスト（OPTIONSリクエスト）に対応
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);  // 204 No Content を返してプリフライトを処理
+  }
+
+  next();
+});
 
 app.use(bodyParser.json());
 // PayPalのAPI処理部分はそのまま
