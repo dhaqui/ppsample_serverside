@@ -4,18 +4,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 
-// CORS設定を強化
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');  // 全てのオリジンを許可
-  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');  // 許可するメソッド
-  res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization');  // 許可するヘッダー
-  if (req.method === 'OPTIONS') {
-    // プリフライトリクエストの場合
-    res.sendStatus(200);  // 200 OKを返してプリフライトリクエストを終了
-  } else {
-    next();
-  }
-});
+// CORS設定の簡略化
+app.use(cors());
 
 app.use(bodyParser.json());
 
