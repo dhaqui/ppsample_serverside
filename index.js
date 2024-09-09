@@ -20,18 +20,20 @@ app.use((req, res, next) => {
 
   // プリフライトリクエスト（OPTIONSリクエスト）に対応
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);  // 204 No Content を返してプリフライトを処理
+    return res.sendStatus(200);  // 200 OK を返してプリフライトを処理
   }
 
   next();
 });
 
-app.use(bodyParser.json());　
+app.use(bodyParser.json());
+
 // PayPalのAPI処理部分はそのまま
 const PAYPAL_CLIENT_ID = 'AeNx2jnN5CUV4jAPLqYMat3ig6PDZXh-kKPnTjQQIIU6AVNA79QnRp-dk4tqHvnnqBbzR_WlCovKdMN-';
 const PAYPAL_CLIENT_SECRET = 'EAMWkTh00y7VV_OF0rjxXvriOLYOCOINlwQLfwuif4HjSxSfOFcvI3TV5363vM1svOPqyX00HtlQIepu';
 const PAYPAL_API_URL = 'https://api-m.sandbox.paypal.com';
 
+// PayPal アクセストークンを生成
 const generateAccessToken = async () => {
   const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString('base64');
   try {
@@ -43,10 +45,11 @@ const generateAccessToken = async () => {
     });
     return response.data.access_token;
   } catch (error) {
-    console.error('Error generating access token:', error);
+    console.error('Error generating access token:', error.response ? error.response.data : error);
   }
 };
 
+// PayPal注文を作成
 app.post('/create-order', async (req, res) => {
   const accessToken = await generateAccessToken();
   const order = {
@@ -64,15 +67,17 @@ app.post('/create-order', async (req, res) => {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 5000  // タイムアウトを5秒に設定
     });
     res.json(response.data);
   } catch (error) {
-    console.error('Error creating order:', error);
+    console.error('Error creating order:', error.response ? error.response.data : error);
     res.status(500).send('Error creating order');
   }
 });
 
+// PayPal注文をキャプチャ
 app.post('/capture-order', async (req, res) => {
   const { orderId } = req.body;
   const accessToken = await generateAccessToken();
@@ -82,11 +87,12 @@ app.post('/capture-order', async (req, res) => {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 5000  // タイムアウトを5秒に設定
     });
     res.json(response.data);
   } catch (error) {
-    console.error('Error capturing order:', error);
+    console.error('Error capturing order:', error.response ? error.response.data : error);
     res.status(500).send('Error capturing payment');
   }
 });
