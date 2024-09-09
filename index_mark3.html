@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Selection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: left;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h2 {
+      color: #333;
+      text-align: center;
+    }
+
+    label {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+
+    button {
+      background-color: #0070ba;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      margin: 20px auto;
+      width: 100%;
+      max-width: 300px;
+      text-align: center;
+    }
+
+    button:hover {
+      background-color: #005c99;
+    }
+
+    #paypal-button-container,
+    #alternate-button-container {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #paypal-button-container {
+      width: 400px;
+    }
+
+    .note {
+      font-size: 14px;
+      color: #555;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    .logo-container img {
+      width: 100%;
+      max-width: 400px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>支払い方法選択</h2>
+
+    <!-- PayPal Option -->
+    <label>
+      <input type="radio" name="payment-option" value="paypal" checked>
+      PayPal
+    </label>
+    <div class="note">
+      カードでも銀行口座からでも、IDとパスワードで簡単・安全にお支払い。新規登録は無料です。
+    </div>
+    <div class="logo-container">
+      <img src="https://www.paypalobjects.com/digitalassets/c/website/marketing/apac/jp/developer/319x110_b.png" alt="PayPalロゴ">
+    </div>
+    <div id="paypal-button-container"></div>
+
+    <!-- Other Payment Method Option -->
+    <label>
+      <input type="radio" name="payment-option" value="alternate">
+      銀行決済
+    </label>
+    <div class="note">
+      銀行口座からのお支払がかんたん。振り込み手数料無料。全国300以上の金融機関がご利用いただけます。
+    </div>
+    <div class="logo-container">
+      <img src="bank.png" alt="銀行ロゴ">
+    </div>
+    <div id="alternate-button-container">
+      <button type="button" onclick="handleBankPayment()">銀行口座で決済を行う</button>
+    </div>
+
+  </div>
+
+  <script src="https://www.paypal.com/sdk/js?client-id=AeNx2jnN5CUV4jAPLqYMat3ig6PDZXh-kKPnTjQQIIU6AVNA79QnRp-dk4tqHvnnqBbzR_WlCovKdMN-&currency=JPY&components=buttons,marks"></script>
+  <script>
+    // PayPalボタンを表示
+    paypal.Buttons({
+      style: {
+        layout: 'vertical',
+        size: 'responsive',
+        width: 400
+      }
+    }).render('#paypal-button-container');
+
+    // ラジオボタンの変更に応じた表示切り替え
+    document.querySelectorAll('input[name=payment-option]').forEach(function (el) {
+      el.addEventListener('change', function (event) {
+        if (event.target.value === 'paypal') {
+          document.querySelector('#alternate-button-container').style.display = 'none';
+          document.querySelector('#paypal-button-container').style.display = 'block';
+        } else {
+          document.querySelector('#alternate-button-container').style.display = 'block';
+          document.querySelector('#paypal-button-container').style.display = 'none';
+        }
+      });
+    });
+
+    // "銀行口座で決済を行う" ボタンが押されたときにサーバーサイドで注文作成と決済
+    async function handleBankPayment() {
+      try {
+        // サーバーサイドで注文を作成
+        const createOrderResponse = await fetch('https://ppsample-serverside.vercel.app/create-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          mode: 'cors'  // これを追加
+        });
+        const orderData = await createOrderResponse.json();
+
+        // 作成した注文で決済をキャプチャ
+        const captureOrderResponse = await fetch('https://ppsample-serverside.vercel.app/capture-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ orderId: orderData.id })
+        });
+        const captureData = await captureOrderResponse.json();
+
+        if (captureData.status === 'COMPLETED') {
+          alert('Payment successful!');
+        } else {
+          alert('Payment failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  </script>
+</body>
+</html>
