@@ -1,40 +1,29 @@
 const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
-const cors = require('cors');  // corsミドルウェアの読み込み
+const cors = require('cors');
 const app = express();
+
+// CORS設定を強化
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');  // 全てのオリジンを許可
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');  // 許可するメソッド
+  res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization');  // 許可するヘッダー
+  if (req.method === 'OPTIONS') {
+    // プリフライトリクエストの場合
+    res.sendStatus(200);  // 200 OKを返してプリフライトリクエストを終了
+  } else {
+    next();
+  }
+});
 
 app.use(bodyParser.json());
 
-// CORSを有効にする（1つだけcorsを使います）
-app.use(cors({
-  origin: '*',  // GitHub Pagesのオリジンを指定
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ここで記載したメソッドを許可する
-  optionsSuccessStatus: 200 // 成功時のステータスを200にする
-}));
+// PayPalのAPI処理部分はそのまま
+const PAYPAL_CLIENT_ID = 'your-client-id';
+const PAYPAL_CLIENT_SECRET = 'your-client-secret';
+const PAYPAL_API_URL = 'https://api-m.sandbox.paypal.com';
 
-// Preflightリクエストを処理する
-app.options('*', cors()); // すべてのルートに対してOPTIONSリクエストを許可
-
-app.options('/create-order', (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.status(200).send();
-});
-
-app.options('/capture-order', (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.status(200).send();
-});
-
-const PAYPAL_CLIENT_ID = 'EAMWkTh00y7VV_OF0rjxXvriOLYOCOINlwQLfwuif4HjSxSfOFcvI3TV5363vM1svOPqyX00HtlQIepu'; // あなたのPayPal Client ID
-const PAYPAL_CLIENT_SECRET = 'EAMWkTh00y7VV_OF0rjxXvriOLYOCOINlwQLfwuif4HjSxSfOFcvI3TV5363vM1svOPqyX00HtlQIepu'; // あなたのPayPal Client Secret
-const PAYPAL_API_URL = 'https://api-m.sandbox.paypal.com'; // 本番環境は 'https://api-m.paypal.com'
-
-// PayPalのアクセストークンを生成
 const generateAccessToken = async () => {
   const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString('base64');
   try {
@@ -50,7 +39,6 @@ const generateAccessToken = async () => {
   }
 };
 
-// PayPalオーダーを作成
 app.post('/create-order', async (req, res) => {
   const accessToken = await generateAccessToken();
   const order = {
@@ -77,7 +65,6 @@ app.post('/create-order', async (req, res) => {
   }
 });
 
-// PayPalオーダーをキャプチャ
 app.post('/capture-order', async (req, res) => {
   const { orderId } = req.body;
   const accessToken = await generateAccessToken();
@@ -96,14 +83,5 @@ app.post('/capture-order', async (req, res) => {
   }
 });
 
-// Vercelはポートを自動で設定します
+// Vercelではポート設定は不要
 module.exports = app;
-
-
-const express = require('express');
-const axios = require('axios');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const app = express();
-
-app.use(bodyParser.json());
