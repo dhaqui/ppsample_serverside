@@ -4,8 +4,18 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 
-// CORS設定の簡略化
-app.use(cors());
+// CORS設定
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://dhaqui.github.io'); // 必要なオリジンを許可
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true'); // Cookieを必要とする場合
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(204); // プリフライトリクエストに対して、OKレスポンスを返す
+  } else {
+    next();
+  }
+});
 
 app.use(bodyParser.json());
 
