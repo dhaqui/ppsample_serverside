@@ -7,13 +7,14 @@ const app = express();
 // CORS設定
 app.use(cors({
   origin: 'https://dhaqui.github.io',  // クライアントのオリジン
-  credentials: true  // 認証情報を許可
+  credentials: true,  // 認証情報を許可
+  optionsSuccessStatus: 200
 }));
 
 app.use(bodyParser.json());
 // PayPalのAPI処理部分はそのまま
-const PAYPAL_CLIENT_ID = 'your-client-id';
-const PAYPAL_CLIENT_SECRET = 'your-client-secret';
+const PAYPAL_CLIENT_ID = 'AeNx2jnN5CUV4jAPLqYMat3ig6PDZXh-kKPnTjQQIIU6AVNA79QnRp-dk4tqHvnnqBbzR_WlCovKdMN-';
+const PAYPAL_CLIENT_SECRET = 'EAMWkTh00y7VV_OF0rjxXvriOLYOCOINlwQLfwuif4HjSxSfOFcvI3TV5363vM1svOPqyX00HtlQIepu';
 const PAYPAL_API_URL = 'https://api-m.sandbox.paypal.com';
 
 const generateAccessToken = async () => {
