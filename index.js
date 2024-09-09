@@ -9,8 +9,8 @@ app.use(bodyParser.json());
 // CORSを有効にする（1つだけcorsを使います）
 app.use(cors({
   origin: '*',  // GitHub Pagesのオリジンを指定
-  methods: ['GET', 'POST'],  // 許可するHTTPメソッド
-  allowedHeaders: ['Content-Type', 'Authorization']  // 許可するヘッダー
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ここで記載したメソッドを許可する
+  optionsSuccessStatus: 200 // 成功時のステータスを200にする
 }));
 
 // Preflightリクエストを処理する
