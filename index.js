@@ -13,6 +13,10 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']  // 許可するヘッダー
 }));
 
+// Preflightリクエストを処理する
+app.options('*', cors()); // すべてのルートに対してOPTIONSリクエストを許可
+
+
 const PAYPAL_CLIENT_ID = 'EAMWkTh00y7VV_OF0rjxXvriOLYOCOINlwQLfwuif4HjSxSfOFcvI3TV5363vM1svOPqyX00HtlQIepu'; // あなたのPayPal Client ID
 const PAYPAL_CLIENT_SECRET = 'EAMWkTh00y7VV_OF0rjxXvriOLYOCOINlwQLfwuif4HjSxSfOFcvI3TV5363vM1svOPqyX00HtlQIepu'; // あなたのPayPal Client Secret
 const PAYPAL_API_URL = 'https://api-m.sandbox.paypal.com'; // 本番環境は 'https://api-m.paypal.com'
