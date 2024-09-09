@@ -5,12 +5,10 @@ const cors = require('cors');
 const app = express();
 
 // CORS設定
-const corsOptions = {
-  origin: 'https://dhaqui.github.io',  // クライアントのオリジンを指定
-  credentials: true  // 認証情報を含めたリクエストを許可
-};
-
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: 'https://dhaqui.github.io',  // クライアントのオリジン
+  credentials: true  // 認証情報を許可
+}));
 
 app.use(bodyParser.json());
 // PayPalのAPI処理部分はそのまま
