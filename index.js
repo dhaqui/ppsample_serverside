@@ -6,21 +6,14 @@ const app = express();
 
 // CORS設定
 app.use((req, res, next) => {
-  // 特定のオリジンを許可
   res.setHeader('Access-Control-Allow-Origin', 'https://dhaqui.github.io');
-
-  // 認証情報を含むリクエストを許可
   res.setHeader('Access-Control-Allow-Credentials', 'true');
-
-  // 許可するHTTPメソッド
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-
-  // 許可するヘッダー
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
 
   // プリフライトリクエスト（OPTIONSリクエスト）に対応
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);  // 200 OK を返してプリフライトを処理
+    return res.status(200).end();  // 200 OK を返してプリフライトを処理
   }
 
   next();
