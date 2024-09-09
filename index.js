@@ -5,6 +5,14 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// CORSを有効にするミドルウェア
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');  // 任意のオリジンを許可
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 const PAYPAL_CLIENT_ID = 'EAMWkTh00y7VV_OF0rjxXvriOLYOCOINlwQLfwuif4HjSxSfOFcvI3TV5363vM1svOPqyX00HtlQIepu'; // あなたのPayPal Client ID
 const PAYPAL_CLIENT_SECRET = 'EAMWkTh00y7VV_OF0rjxXvriOLYOCOINlwQLfwuif4HjSxSfOFcvI3TV5363vM1svOPqyX00HtlQIepu'; // あなたのPayPal Client Secret
 const PAYPAL_API_URL = 'https://api-m.sandbox.paypal.com'; // 本番環境は 'https://api-m.paypal.com'
