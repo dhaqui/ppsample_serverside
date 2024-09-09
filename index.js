@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 
 // CORSを有効にする（1つだけcorsを使います）
 app.use(cors({
-  origin: 'https://ppsample.vercel.app',  // GitHub Pagesのオリジンを指定
+  origin: '*',  // GitHub Pagesのオリジンを指定
   methods: ['GET', 'POST'],  // 許可するHTTPメソッド
   allowedHeaders: ['Content-Type', 'Authorization']  // 許可するヘッダー
 }));
