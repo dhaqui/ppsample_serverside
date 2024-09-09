@@ -1,10 +1,15 @@
 const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
-const cors = require('cors');  
+const cors = require('cors');
 const app = express();
 
 app.use(bodyParser.json());
+
+const cors = require('cors');
+app.use(cors({
+  origin: 'https://dhaqui.github.io',  // GitHub Pagesのオリジンを指定
+}));
 
 // CORSを有効にするミドルウェア
 app.use((req, res, next) => {
