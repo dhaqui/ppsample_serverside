@@ -4,21 +4,14 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 
-// CORS設定
-app.use((req, res, next) => {
-  // 特定のオリジン（例: 'https://dhaqui.github.io'）のみ許可
-  res.setHeader('Access-Control-Allow-Origin', 'https://dhaqui.github.io');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true'); // Credentialsの送信を許可
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(204); // プリフライトリクエストに対して、204 No Contentを返す
-  } else {
-    next();
-  }
-});
+// CORS設定の簡略化
+app.use(cors({
+  origin: 'https://dhaqui.github.io',  // クライアントサイドのオリジンを指定
+  credentials: true  // 認証情報（クッキーなど）を許可
+}));
 
 app.use(bodyParser.json());
+
 
 // PayPalのAPI処理部分はそのまま
 const PAYPAL_CLIENT_ID = 'your-client-id';
