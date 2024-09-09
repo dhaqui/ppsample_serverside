@@ -1,11 +1,15 @@
 {
   "headers": [
     {
-      "source": "/(.*)",  // 全てのエンドポイントに適用
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://dhaqui.github.io"  // 特定のオリジンを許可
+          "value": "https://dhaqui.github.io"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
         },
         {
           "key": "Access-Control-Allow-Methods",
@@ -13,11 +17,7 @@
         },
         {
           "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        },
-        {
-          "key": "Access-Control-Allow-Credentials",
-          "value": "true"  // 認証情報を許可
+          "value": "X-Requested-With, Content-Type, Authorization"
         }
       ]
     }
