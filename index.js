@@ -4,15 +4,15 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 
-// CORS設定の簡略化
-app.use(cors({
-  origin: 'https://dhaqui.github.io',  // クライアントサイドのオリジンを指定
-  credentials: true  // 認証情報（クッキーなど）を許可
-}));
+// CORS設定
+const corsOptions = {
+  origin: 'https://dhaqui.github.io',  // クライアントのオリジンを指定
+  credentials: true  // 認証情報を含めたリクエストを許可
+};
+
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
-
-
 // PayPalのAPI処理部分はそのまま
 const PAYPAL_CLIENT_ID = 'your-client-id';
 const PAYPAL_CLIENT_SECRET = 'your-client-secret';
