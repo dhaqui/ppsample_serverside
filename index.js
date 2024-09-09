@@ -5,8 +5,8 @@ const app = express();
 
 app.use(bodyParser.json());
 
-const PAYPAL_CLIENT_ID = 'YOUR_CLIENT_ID'; // あなたのPayPal Client ID
-const PAYPAL_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'; // あなたのPayPal Client Secret
+const PAYPAL_CLIENT_ID = 'EAMWkTh00y7VV_OF0rjxXvriOLYOCOINlwQLfwuif4HjSxSfOFcvI3TV5363vM1svOPqyX00HtlQIepu'; // あなたのPayPal Client ID
+const PAYPAL_CLIENT_SECRET = 'EAMWkTh00y7VV_OF0rjxXvriOLYOCOINlwQLfwuif4HjSxSfOFcvI3TV5363vM1svOPqyX00HtlQIepu'; // あなたのPayPal Client Secret
 const PAYPAL_API_URL = 'https://api-m.sandbox.paypal.com'; // 本番環境は 'https://api-m.paypal.com'
 
 // PayPalのアクセストークンを生成
